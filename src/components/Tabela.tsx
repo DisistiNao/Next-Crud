@@ -3,16 +3,21 @@ import { IconeEdicao, IconeLixo } from "./Icones";
 
 interface TabelaProps {
     clientes: Cliente[] 
+    clienteSelecionado?: (cliente: Cliente) => void
+    clienteExcluido?: (cliente: Cliente) => void
 }
 
 export default function Tabela(props: TabelaProps) {
+    
+    const exibirAcoes = props.clienteSelecionado || props.clienteExcluido
+    
     function renderCabecalho() {
         return (
             <tr>
                 <th className="text-left p-4">Código</th>
                 <th className="text-left p-4">Nome</th>
                 <th className="text-left p-4">Idade</th>
-                <th className="p-4">Ações</th>
+                {exibirAcoes ? <th className="p-4">Ações</th> : false}
             </tr>
         )
     }
@@ -27,7 +32,7 @@ export default function Tabela(props: TabelaProps) {
                     <th className="text-left p-4">{cliente.id}</th>
                     <th className="text-left p-4">{cliente.nome}</th>
                     <th className="text-left p-4">{cliente.idade}</th>
-                    {renderAcoes(cliente)}
+                    {exibirAcoes ? renderAcoes(cliente) : false}
                 </tr>
             )
         })
@@ -35,21 +40,29 @@ export default function Tabela(props: TabelaProps) {
 
     function renderAcoes(cliente: Cliente) {
         return (
-            <td className="flex">
-                <button className={`
-                    flex justify-center items-center 
-                    text-green-600 rounded-full p-2 m-1 
-                    hover:bg-purple-50
-                `}>
-                    {IconeEdicao}
-                </button>
-                <button className={`
-                    flex justify-center items-center 
-                    text-red-500 rounded-full p-2 m-1 
-                    hover:bg-purple-50
-                `}>
-                    {IconeLixo}
-                </button>
+            <td className="flex justify-center">
+                {props.clienteSelecionado ? (
+                    <button
+                    onClick={() => props.clienteSelecionado?.(cliente)} 
+                    className={`
+                        flex justify-center items-center 
+                        text-green-600 rounded-full p-2 m-1 
+                        hover:bg-purple-50
+                    `}>
+                        {IconeEdicao}
+                    </button>
+                ) : false}
+                {props.clienteExcluido ? (
+                    <button
+                    onClick={() => props.clienteExcluido?.(cliente)} 
+                    className={`
+                        flex justify-center items-center 
+                        text-red-500 rounded-full p-2 m-1 
+                        hover:bg-purple-50
+                    `}>
+                        {IconeLixo}
+                    </button>
+                ) : false}
             </td>
         )
     }
